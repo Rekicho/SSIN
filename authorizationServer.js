@@ -27,6 +27,12 @@ var clients = [
 		"client_secret": "oauth-client-secret-1",
 		"redirect_uris": ["http://localhost:9000/callback"],
 		"scope": "foo bar"
+	},
+	{
+		"client_id": "oauth-client-2",
+		"client_secret": "oauth-client-secret-2",
+		"redirect_uris": ["http://localhost:9000/callback"],
+		"scope": "foo bar"
 	}
 ];
 
@@ -34,16 +40,23 @@ var codes = {};
 
 var requests = {};
 
-app.get('/', function(req, res) {
-	res.render('index', {clients: clients, authServer: authServer});
+app.get('/', function (req, res) {
+	res.render('index', { clients: clients, authServer: authServer });
+});
+
+app.post('/authorization', function (req, res) {
+	console.log("RECIEVED A REQUEST!");
+	console.log(req.body);
+
+	res.send(clients);
 });
 
 app.use('/', express.static('files/authorizationServer'));
 
 var server = app.listen(9001, 'localhost', function () {
-  var host = server.address().address;
-  var port = server.address().port;
+	var host = server.address().address;
+	var port = server.address().port;
 
-  console.log('OAuth Authorization Server is listening at http://%s:%s', host, port);
+	console.log('OAuth Authorization Server is listening at http://%s:%s', host, port);
 });
- 
+
