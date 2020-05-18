@@ -34,6 +34,8 @@ var codes = {};
 
 var requests = {};
 
+const authCodes = new Set();
+
 app.get('/', function(req, res) {
 	res.render('index', {clients: clients, authServer: authServer});
 });
@@ -45,5 +47,14 @@ var server = app.listen(9001, 'localhost', function () {
   var port = server.address().port;
 
   console.log('OAuth Authorization Server is listening at http://%s:%s', host, port);
+});
+
+//this is vulnerable to CSRF Attack
+//TODO
+app.post('/auth-code', (req, res) => {
+	const authCode = new Array(10).fill(null).map(() => Math.floor(Math.random() * 10)).join('');
+
+	authCodes.add(authCode);
+	res.redirect(`http://localhost:9000/?code=${authCode}`);
 });
  
