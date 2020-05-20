@@ -3,6 +3,7 @@
     "start": "concurrently \"node authorizationServer.js\" \"node client.js\" \"node protectedResource.js\""
   },
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "body-parser": "^1.13.2",
     "concurrently": "^5.1.0",
     "consolidate": "^0.13.1",

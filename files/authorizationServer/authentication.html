@@ -47,13 +47,13 @@
   <div class="container">
 
     <div class="jumbotron">
-
+      <h3><%-error%></h3>
       <h2 class="40px">Login</h2>
       <form method="POST" action="/submit-credentials">
         <label for="identifier">Identifier:</label><br>
-        <input type="text" id="identifier" name="identifier" value="LGP"><br>
+        <input type="text" id="identifier" name="identifier" value=""><br>
         <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" value="MEERDAA"><br><br>
+        <input type="password" id="password" name="password" value=""><br><br>
         <input class="i" type="hidden" id="client_id" name="client_id" value="<%- client_id%>">
         <input class="i" type="hidden" id="response_type" name="response_type" value="<%- response_type%>">
         <input type="submit" value="Submit">
