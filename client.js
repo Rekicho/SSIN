@@ -1,10 +1,12 @@
 var express = require("express");
+var cors = require("cors");
 var cons = require("consolidate");
 var http = require("http");
 
 const request = require("request");
 
 var app = express();
+app.use(cors());
 
 app.engine("html", cons.underscore);
 app.set("view engine", "html");

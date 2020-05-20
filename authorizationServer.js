@@ -1,4 +1,5 @@
 var express = require("express");
+var cors = require("cors");
 var bodyParser = require("body-parser");
 var cons = require("consolidate");
 var __ = require("underscore");
@@ -12,6 +13,7 @@ const ACCESS_TOKEN_EXPIRE = 3600;
 const REFRESH_TOKEN_EXPIRE = 31556926; //Refresh tokens are long-lasting
 
 var app = express();
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
