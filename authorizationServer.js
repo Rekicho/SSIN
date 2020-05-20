@@ -38,17 +38,52 @@ var clients = [
 
 var codes = {};
 
-var requests = {};
+var requests = [];
 
 app.get('/', function (req, res) {
 	res.render('index', { clients: clients, authServer: authServer });
 });
 
-app.post('/authorization', function (req, res) {
-	console.log("RECIEVED A REQUEST!");
-	console.log(req.body);
+app.post('/token', function (req, res) {
+	const grant_type = req.params.grant_type;
+	const code = req.query.code;
+	const client_id = req.query.client_id;
+	const client_secret = req.query.client_secret;
+
+	// Verify parameters
+	console.log(req.body.info);
+	console.log(grant_type);
 
 	res.send(clients);
+});
+
+app.use('/authorize', function (req, res) {
+	const response_type = req.query.response_type;
+	const client_id = req.query.client_id;
+
+	if (response_type === "code" && client_id != null) {
+		requests.push({ "client_id": client_id, "response_type": response_type });
+
+		res.render('authentication', { client_id: client_id, response_type: response_type });
+	} else {
+		throw new Error('PARAMETERS MISSING!!!!!');
+	}
+});
+
+app.post('/submit-credentials', (req, res) => {
+	const username = req.body.identifier;
+	const password = req.body.password;
+	const client_id = req.body.client_id;
+	const response_type = req.body.response_type;
+
+	console.log(username, password, client_id, response_type);
+
+	for (let i = 0; i < clients.length; i++) {
+		if (clients[i].client_id == client_id) {
+			res.redirect(clients[i].redirect_uris[0] + '?code=IDontKnowWhatToPutInHere');
+			return;
+		}
+	}
 });
 
 app.use('/', express.static('files/authorizationServer'));
