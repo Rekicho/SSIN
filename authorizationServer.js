@@ -5,6 +5,9 @@ var __ = require("underscore");
 __.string = require("underscore.string");
 
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+
+const AUTH_CODE_EXPIRE = 300;
 
 var app = express();
 
@@ -40,7 +43,7 @@ const users = [
   },
 ];
 
-var codes = {};
+const codes = [];
 
 app.get("/", function (req, res) {
   res.render("index", { clients: clients, authServer: authServer });
@@ -105,7 +108,19 @@ app.post("/submit-credentials", async (req, res) => {
         "&error=BadRequest"
     );
 
-  res.redirect("/"); //Send code
+  const code = crypto.randomBytes(64).toString("hex");
+
+  codes.push({
+    code: code,
+    client_id: client_id,
+    expires: new Date().getTime() + AUTH_CODE_EXPIRE,
+  });
+
+  res.redirect(client.redirect_uris[0] + "?code=" + code);
+});
+
+app.get("/", function (req, res) {
+  res.render("index", { clients: clients, authServer: authServer });
 });
 
 app.use("/", express.static("files/authorizationServer"));
