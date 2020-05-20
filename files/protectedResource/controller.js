@@ -26,8 +26,8 @@ function getResource(request, response){
     //TODO: check scope
 
     
-    const content = readFile('./files/protectedResource/resources/' + resource);
-
+    const file = readFile('./files/protectedResource/resources/' + resource);
+    const content  = JSON.parse(file)['content'];
     response.status(400).send(content);
 }
 
