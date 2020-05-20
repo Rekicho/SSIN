@@ -2,6 +2,7 @@ var express = require("express");
 var cons = require('consolidate');
 var bodyParser = require('body-parser');
 var __ = require('underscore');
+var routes = require('./files/protectedResource/routes');
 var cors = require('cors');
 
 var app = express();
@@ -13,7 +14,7 @@ app.set('view engine', 'html');
 app.set('views', 'files/protectedResource');
 app.set('json spaces', 4);
 
-app.use('/', express.static('files/protectedResource'));
+app.use('/', routes);
 app.use(cors());
 
 var resource = {

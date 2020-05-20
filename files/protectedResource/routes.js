@@ -1,6 +1,9 @@
-import { Router, request, response } from "express";
-import {validateAccessToken, getResource} from "./controller";    
+const { Router, request, response } =  require("express");
+const {validateAccessToken, getResource} =  require("./controller"); 
+const route = Router();   
 
-Router.get('resource/:id', (request, response) =>{
+route.get('/resource/:id', (request, response) =>{
     validateAccessToken(request, response, getResource);
 });
+
+module.exports = route;

@@ -9,7 +9,9 @@ function validateAccessToken(request, response, next){
 
     const listTokens = getTokens();
 
-    valid = listTokens.includes(token);
+    //valid = listTokens.includes(token);
+
+    valid =true;
 
     if(!valid){
         response.status(403).send(cause);   
@@ -19,13 +21,15 @@ function validateAccessToken(request, response, next){
 
 function getResource(request, response){
     
-    const resource = request.body.resource;
+    const resource = request.params.id;
 
     //TODO: check scope
 
-    const content = readFile('./resources/' + resource);
+    
+    const content = readFile('./files/protectedResource/resources/' + resource);
 
     response.status(400).send(content);
-
 }
+
+module.exports = {validateAccessToken, getResource};
 

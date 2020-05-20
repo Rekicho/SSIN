@@ -78,4 +78,5 @@ function writeToFile(filePath, content) {
 
 }
 
+module.exports = {getTokens, readFile};
 
