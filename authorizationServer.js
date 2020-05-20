@@ -6,6 +6,9 @@ __.string = require("underscore.string");
 
 const crypto = require("crypto");
 
+const ACCESS_TOKEN_EXPIRE = 3600;
+const REFRESH_TOKEN_EXPIRE = 31556926; //Refresh tokens are long-lasting
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -29,6 +32,8 @@ var clients = [
     client_secret: "oauth-client-secret-1",
     redirect_uris: "http://localhost:9000/callback",
     scope: "foo bar",
+    tokens: [],
+    refresh_token: null,
   },
 ];
 
@@ -37,7 +42,6 @@ var codes = [
     code: "AAAAAAAAAAAAAAAAAAAA",
     client_id: "oauth-client-1",
     expires: 999999999999999999999,
-    tokens: [],
   },
 ];
 
@@ -49,12 +53,8 @@ app.get("/", function (req, res) {
 
 app.use("/", express.static("files/authorizationServer"));
 
-app.post("/token", function (req, res) {
-  res.setHeader("Content-Type", "application/json;charset=UTF-8");
-  res.setHeader("Cache-Control", "no-store");
-  res.setHeader("Pragma", "no-cache");
-
-  if (!req.body.grant_type || !req.body.code || !req.body.client_id)
+const grantAuthCode = (req, res) => {
+  if (!req.body.code || !req.body.client_id)
     return res.statusCode(400).send({ error: "invalid_request" });
 
   const client = clients.find((elem) => elem.client_id === req.body.client_id);
@@ -72,22 +72,75 @@ app.post("/token", function (req, res) {
   if (code.client_id != req.body.client_id)
     return res.status(400).send({ error: "unauthorized_client" });
 
-  if (req.body.grant_type !== "authorization_code")
-    return res.status(400).send({ error: "unsupported_grant_type" });
+  const token = crypto.randomBytes(64).toString("hex");
 
-  const token = crypto.randomBytes(32).toString("hex");
-  const expiresIn = 3600;
-
-  code.tokens.push({
+  client.tokens.push({
     access_token: token,
-    expires: new Date().getTime() + expiresIn,
+    expires: new Date().getTime() + ACCESS_TOKEN_EXPIRE,
   });
 
-  res.send({
+  if (
+    !client.refresh_token ||
+    client.refresh_token.expires < new Date().getTime()
+  ) {
+    client.refresh_token = {
+      token: crypto.randomBytes(64).toString("hex"),
+      expires: new Date().getTime() + REFRESH_TOKEN_EXPIRE,
+    };
+  }
+
+  return res.send({
+    access_token: token,
+    refresh_token: client.refresh_token.token,
+    token_type: "Bearer",
+    expires_in: ACCESS_TOKEN_EXPIRE,
+  });
+};
+
+const grantRefreshToken = (req, res) => {
+  if (!req.body.refresh_token)
+    return res.statusCode(400).send({ error: "invalid_request" });
+
+  const client = clients.find(
+    (elem) => "Basic " + elem.client_secret === req.header("Authorization")
+  );
+
+  if (!client) return res.status(400).send({ error: "invalid_client" });
+
+  if (
+    !client.refresh_token ||
+    client.refresh_token.token != req.body.refresh_token
+  )
+    return res.status(400).send({ error: "unauthorized_client" });
+
+  const token = crypto.randomBytes(64).toString("hex");
+
+  client.tokens.push({
+    access_token: token,
+    expires: new Date().getTime() + ACCESS_TOKEN_EXPIRE,
+  });
+
+  return res.send({
     access_token: token,
     token_type: "Bearer",
-    expires_in: expiresIn,
+    expires_in: ACCESS_TOKEN_EXPIRE,
   });
+};
+
+app.post("/token", function (req, res) {
+  res.setHeader("Content-Type", "application/json;charset=UTF-8");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Pragma", "no-cache");
+
+  if (!req.body.grant_type)
+    return res.statusCode(400).send({ error: "invalid_request" });
+
+  if (req.body.grant_type === "authorization_code")
+    return grantAuthCode(req, res);
+  else if (req.body.grant_type === "refresh_token")
+    return grantRefreshToken(req, res);
+
+  return res.status(400).send({ error: "unsupported_grant_type" });
 });
 
 var server = app.listen(9001, "localhost", function () {
