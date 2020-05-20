@@ -3,11 +3,6 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-const crypto = require('crypto');
-const { generateKeyPair } = require('crypto');
-
-
-const algorithm = 'aes-192-cbc';
 
 
 function getJSON(options) {
@@ -44,12 +39,12 @@ function getJSON(options) {
   };
   
 
-
+//Introspect request
 function getTokens(){
     const options = {
         host: 'localhost',
         port: 9001,
-        path: '/token',
+        path: '/token', // update to introspect url
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
