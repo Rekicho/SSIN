@@ -1,5 +1,0 @@
-{
-    "allowed_users": ["logged_in", "admin", "developer"],
-
-    "content": "Hello this is resource number 1"
-}

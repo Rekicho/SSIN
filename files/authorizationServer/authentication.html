@@ -54,6 +54,12 @@
         <input type="text" id="identifier" name="identifier" value=""><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" value=""><br><br>
+        <input type="checkbox" id="read" name="read">
+        <label for="read">Read</label>
+        <input type="checkbox" id="write" name="write">
+        <label for="write">Write</label>
+        <input type="checkbox" id="delete" name="delete">
+        <label for="delete">Delete</label>
         <input class="i" type="hidden" id="client_id" name="client_id" value="<%- client_id%>">
         <input class="i" type="hidden" id="response_type" name="response_type" value="<%- response_type%>">
         <input type="submit" value="Submit">

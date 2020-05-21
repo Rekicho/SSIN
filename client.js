@@ -30,6 +30,7 @@ app.get("/", function (req, res) {
 
 app.get("/callback", function (req, res) {
   const code = req.query.code;
+  scope = req.query.scope;
 
   request.post(
     "http://127.0.0.1:9001/token",
@@ -48,7 +49,6 @@ app.get("/callback", function (req, res) {
 
       access_token = body.access_token;
       refresh_token = body.refresh_token;
-      //Needs Scope
       res.redirect("/");
     }
   );

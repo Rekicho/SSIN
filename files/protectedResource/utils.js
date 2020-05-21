@@ -6,7 +6,7 @@ const introspect_key =
   "ff61d7d5e447eef6d818d240fc5023b1807cdee480638c3ae38ca2402f387e7560781fc9c1adad16dd0b2144b6fdb7428f275b80c9c008c05409e9475229f705";
 
 //Introspect request
-async function getValidToken(token) {
+async function getTokenInfo(token) {
   try {
     const res = await request.post("http://127.0.0.1:9001/introspect", {
       form: {
@@ -18,9 +18,14 @@ async function getValidToken(token) {
       },
     });
 
-    return true;
+    const tokenInfo = JSON.parse(res);
+
+    return {
+      scope: tokenInfo.scope,
+      username: tokenInfo.username,
+    };
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -42,4 +47,4 @@ function writeToFile(filePath, content) {
   });
 }
 
-module.exports = { getValidToken, readFile };
+module.exports = { getTokenInfo, readFile };

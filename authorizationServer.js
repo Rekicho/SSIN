@@ -82,6 +82,11 @@ app.post("/submit-credentials", async (req, res) => {
   const client_id = req.body.client_id;
   const response_type = req.body.response_type;
 
+  const scope =
+    (req.body.read ? "read " : "") +
+    (req.body.write ? "write " : "") +
+    (req.body.delete ? "delete " : "");
+
   const client = clients.find((elem) => elem.client_id === client_id);
   const user = users.find((elem) => elem.username === username);
 
@@ -111,9 +116,13 @@ app.post("/submit-credentials", async (req, res) => {
     code: code,
     client_id: client_id,
     expires: new Date().getTime() + AUTH_CODE_EXPIRE,
+    username: username,
+    scope: scope,
   });
 
-  res.redirect(client.redirect_uris[0] + "?code=" + code);
+  res.redirect(
+    encodeURI(client.redirect_uris[0] + "?code=" + code + "&scope=" + scope)
+  );
 });
 
 const grantAuthCode = (req, res) => {
@@ -139,6 +148,8 @@ const grantAuthCode = (req, res) => {
 
   client.tokens.push({
     access_token: token,
+    username: code.username,
+    scope: code.scope,
     expires: new Date().getTime() + ACCESS_TOKEN_EXPIRE,
   });
 
@@ -160,7 +171,6 @@ const grantAuthCode = (req, res) => {
   });
 };
 
-// Change Refresh Tokens not to beo only 1 per client
 const grantRefreshToken = (req, res) => {
   if (!req.body.refresh_token)
     return res.status(400).send({ error: "invalid_request" });
@@ -236,7 +246,8 @@ app.use("/introspect", function (req, res) {
 
   return res.send({
     active: tokenInfo.expires >= new Date().getTime(),
-    //scope
+    scope: tokenInfo.scope,
+    username: tokenInfo.username,
     client_id: tokenClient.client_id,
     exp: tokenInfo.expires,
   });
