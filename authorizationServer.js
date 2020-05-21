@@ -51,6 +51,10 @@ const users = [
 
 const codes = [];
 
+const procResKeys = [
+  "ff61d7d5e447eef6d818d240fc5023b1807cdee480638c3ae38ca2402f387e7560781fc9c1adad16dd0b2144b6fdb7428f275b80c9c008c05409e9475229f705",
+];
+
 app.get("/", function (req, res) {
   res.render("index", { clients: clients, authServer: authServer });
 });
@@ -111,14 +115,6 @@ app.post("/submit-credentials", async (req, res) => {
 
   res.redirect(client.redirect_uris[0] + "?code=" + code);
 });
-
-var requests = [];
-
-app.get("/", function (req, res) {
-  res.render("index", { clients: clients, authServer: authServer });
-});
-
-app.use("/", express.static("files/authorizationServer"));
 
 const grantAuthCode = (req, res) => {
   if (!req.body.code || !req.body.client_id)
@@ -210,6 +206,47 @@ app.post("/token", function (req, res) {
 
   return res.status(400).send({ error: "unsupported_grant_type" });
 });
+
+app.use("/introspect", function (req, res) {
+  if (!req.body.token)
+    return res.status(400).send({ error: "invalid_request" });
+
+  const procRes = procResKeys.find(
+    (elem) => "Basic " + elem === req.header("Authorization")
+  );
+
+  if (!procRes)
+    return res.status(400).send({ error: "unauthorized_protected_resource" });
+
+  let tokenInfo;
+
+  const tokenClient = clients.find((client) => {
+    const tokenFound = client.tokens.find(
+      (token) => token.access_token === req.body.token
+    );
+
+    if (tokenFound) tokenInfo = tokenFound;
+
+    return tokenFound;
+  });
+
+  if (!tokenClient) return res.status(404).send({ error: "token_not_found" });
+
+  res.setHeader("Content-Type", "application/json");
+
+  return res.send({
+    active: tokenInfo.expires >= new Date().getTime(),
+    //scope
+    client_id: tokenClient.client_id,
+    exp: tokenInfo.expires,
+  });
+});
+
+app.get("/", function (req, res) {
+  res.render("index", { clients: clients, authServer: authServer });
+});
+
+app.use("/", express.static("files/authorizationServer"));
 
 var server = app.listen(9001, "localhost", function () {
   var host = server.address().address;

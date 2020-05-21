@@ -1,22 +1,15 @@
 var express = require("express");
-const { getTokens, readFile, writeToFile } = require("./utils");
+const { getValidToken, readFile } = require("./utils");
 
-function validateAccessToken(request, response, next) {
-  let valid;
+async function validateAccessToken(request, response, next) {
+  const token = request.header("Authorization").replace("Bearer ", "");
 
-  const token = request.header("Authorization");
-
-  console.log(token);
-
-  const listTokens = getTokens();
-
-  //valid = listTokens.includes(token);
-
-  valid = true;
+  const valid = await getValidToken(token);
 
   if (!valid) {
-    response.status(403).send(cause);
+    return response.status(401).send("");
   }
+
   next(request, response);
 }
 

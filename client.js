@@ -31,14 +31,6 @@ app.get("/", function (req, res) {
 app.get("/callback", function (req, res) {
   const code = req.query.code;
 
-  var data = JSON.stringify({
-    info: {
-      grant_type: "authorization_code",
-      code: code,
-      client_id: client_id,
-    },
-  });
-
   request.post(
     "http://127.0.0.1:9001/token",
     {
