@@ -60,6 +60,10 @@ app.get("/", function (req, res) {
 });
 
 app.use("/authorize", function (req, res) {
+  console.log("GET /authorize " + JSON.stringify(req.query));
+  console.log("Headers: " + req.headers);
+  console.log("Body: " + req.body);
+
   const response_type = req.query.response_type;
   const client_id = req.query.client_id;
   const error = req.query.error;
@@ -77,6 +81,10 @@ app.use("/authorize", function (req, res) {
 });
 
 app.post("/submit-credentials", async (req, res) => {
+  console.log("POST /submit-credentials " + JSON.stringify(req.query));
+  console.log("Headers: " + req.headers);
+  console.log("Body: " + req.body);
+
   const username = req.body.identifier;
   const password = req.body.password;
   const client_id = req.body.client_id;
@@ -202,6 +210,10 @@ const grantRefreshToken = (req, res) => {
 };
 
 app.post("/token", function (req, res) {
+  console.log("POST /token " + JSON.stringify(req.query));
+  console.log("Headers: " + req.headers);
+  console.log("Body: " + req.body);
+
   res.setHeader("Content-Type", "application/json;charset=UTF-8");
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("Pragma", "no-cache");
@@ -217,7 +229,11 @@ app.post("/token", function (req, res) {
   return res.status(400).send({ error: "unsupported_grant_type" });
 });
 
-app.use("/introspect", function (req, res) {
+app.post("/introspect", function (req, res) {
+  console.log("POST /introspect " + JSON.stringify(req.query));
+  console.log("Headers: " + req.headers);
+  console.log("Body: " + req.body);
+
   if (!req.body.token)
     return res.status(400).send({ error: "invalid_request" });
 

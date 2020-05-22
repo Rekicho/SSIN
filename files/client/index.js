@@ -7,6 +7,8 @@ const getProtectedResource = () => {
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
+      console.log(xhttp);
+
       const res = JSON.parse(xhttp.responseText);
       console.log(res.scope);
       document.querySelector(".protectedResource").innerHTML = res.content;

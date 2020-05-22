@@ -29,6 +29,10 @@ app.get("/", function (req, res) {
 });
 
 app.get("/callback", function (req, res) {
+  console.log("GET /callback " + JSON.stringify(req.query));
+  console.log("Headers: " + req.headers);
+  console.log("Body: " + req.body);
+
   const code = req.query.code;
   scope = req.query.scope;
 

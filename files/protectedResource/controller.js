@@ -11,6 +11,9 @@ const scopes = [
 ];
 
 async function validateAccessToken(request, response, next) {
+  console.log("Headers: " + request.headers);
+  console.log("Body: " + request.body);
+
   const token = request.header("Authorization").replace("Bearer ", "");
 
   const tokenInfo = await getTokenInfo(token);
