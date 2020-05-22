@@ -30,8 +30,8 @@ app.get("/", function (req, res) {
 
 app.get("/callback", function (req, res) {
   console.log("GET /callback " + JSON.stringify(req.query));
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
+  console.log("Headers: " + JSON.stringify(req.headers));
+  console.log("Body: " + JSON.stringify(req.body));
 
   const code = req.query.code;
   scope = req.query.scope;
@@ -49,6 +49,7 @@ app.get("/callback", function (req, res) {
       },
     },
     (err, response, body) => {
+      console.log(JSON.parse(body));
       body = JSON.parse(body);
 
       access_token = body.access_token;

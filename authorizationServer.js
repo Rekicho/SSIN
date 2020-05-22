@@ -37,7 +37,7 @@ var clients = [
     redirect_uris: ["http://localhost:9000/callback"],
     scope: "foo bar",
     tokens: [],
-    refresh_token: null,
+    refresh_tokens: [],
   },
 ];
 
@@ -61,8 +61,8 @@ app.get("/", function (req, res) {
 
 app.use("/authorize", function (req, res) {
   console.log("GET /authorize " + JSON.stringify(req.query));
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
+  console.log("Headers: " + JSON.stringify(req.headers));
+  console.log("Body: " + JSON.stringify(req.body));
 
   const response_type = req.query.response_type;
   const client_id = req.query.client_id;
@@ -82,8 +82,8 @@ app.use("/authorize", function (req, res) {
 
 app.post("/submit-credentials", async (req, res) => {
   console.log("POST /submit-credentials " + JSON.stringify(req.query));
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
+  console.log("Headers: " + JSON.stringify(req.headers));
+  console.log("Body: " + JSON.stringify(req.body));
 
   const username = req.body.identifier;
   const password = req.body.password;
@@ -161,19 +161,30 @@ const grantAuthCode = (req, res) => {
     expires: new Date().getTime() + ACCESS_TOKEN_EXPIRE,
   });
 
-  if (
-    !client.refresh_token ||
-    client.refresh_token.expires < new Date().getTime()
-  ) {
-    client.refresh_token = {
-      token: crypto.randomBytes(64).toString("hex"),
+  const refresh_token = client.refresh_tokens.find(
+    (elem) => elem.username === code.username
+  );
+
+  let refr_token;
+
+  if (!refresh_token || refresh_token.expires < new Date().getTime()) {
+    refr_token = crypto.randomBytes(64).toString("hex");
+    client.refresh_tokens = client.refresh_tokens.filter(
+      (elem) => elem.username != code.username
+    );
+    client.refresh_tokens.push({
+      token: refr_token,
+      username: code.username,
+      scope: code.scope,
       expires: new Date().getTime() + REFRESH_TOKEN_EXPIRE,
-    };
+    });
+  } else {
+    refr_token = refresh_token.token;
   }
 
   return res.send({
     access_token: token,
-    refresh_token: client.refresh_token.token,
+    refresh_token: refr_token,
     token_type: "Bearer",
     expires_in: ACCESS_TOKEN_EXPIRE,
   });
@@ -189,16 +200,19 @@ const grantRefreshToken = (req, res) => {
 
   if (!client) return res.status(400).send({ error: "invalid_client" });
 
-  if (
-    !client.refresh_token ||
-    client.refresh_token.token != req.body.refresh_token
-  )
+  const refresh_token = client.refresh_tokens.find(
+    (elem) => elem.token === req.body.refresh_token
+  );
+
+  if (!refresh_token)
     return res.status(400).send({ error: "unauthorized_client" });
 
   const token = crypto.randomBytes(64).toString("hex");
 
   client.tokens.push({
     access_token: token,
+    username: refresh_token.username,
+    scope: refresh_token.scope,
     expires: new Date().getTime() + ACCESS_TOKEN_EXPIRE,
   });
 
@@ -211,8 +225,8 @@ const grantRefreshToken = (req, res) => {
 
 app.post("/token", function (req, res) {
   console.log("POST /token " + JSON.stringify(req.query));
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
+  console.log("Headers: " + JSON.stringify(req.headers));
+  console.log("Body: " + JSON.stringify(req.body));
 
   res.setHeader("Content-Type", "application/json;charset=UTF-8");
   res.setHeader("Cache-Control", "no-store");
@@ -231,8 +245,8 @@ app.post("/token", function (req, res) {
 
 app.post("/introspect", function (req, res) {
   console.log("POST /introspect " + JSON.stringify(req.query));
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
+  console.log("Headers: " + JSON.stringify(req.headers));
+  console.log("Body: " + JSON.stringify(req.body));
 
   if (!req.body.token)
     return res.status(400).send({ error: "invalid_request" });
