@@ -19,13 +19,13 @@ function showsTabContent() {
   tabcontent[0].style.display = "block";
 };
 
-function createDeleteTab(tab){
+function createDeleteTab(tabcontent){
   tabcontent[0].innerHTML += 
       '<button class="tablinks" onClick="openTab(event,' + 'Delete' + ')">' + "Delete" + '</button> \
       ';
 }
 
-function createAddTab(tab){
+function createAddTab(tabcontent){
   tabcontent[0].innerHTML += 
       '<button class="tablinks" onClick="openTab(event,' + 'Write' + ')">' + "Write" + '</button> \
       ';
@@ -75,22 +75,27 @@ const getScopes = () =>{
 
 const getProtectedResource = () => {
   const token = document.querySelector(".access_token").innerText;
+  const word = document.getElementById('form-read').value;
+
 
   let xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "http://localhost:9002/resource/resource.json", true);
+  xhttp.open("POST", "http://localhost:9002/read", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
       console.log(xhttp);
 
-      const res = JSON.parse(xhttp.responseText);
+      const res = xhttp.responseText;
       console.log(res);
-      document.querySelector(".protectedResource").innerHTML = res.content;
+      document.getElementById("form-res").value = res;
     }
   };
 
-  xhttp.send();
+  xhttp.send(`word=${word}`);
+  return false;
 };
 
 const addProtectedResource = (event) => {
@@ -102,9 +107,7 @@ const addProtectedResource = (event) => {
   
   const params = {"word": word, "meaning": meaning};
   const s = JSON.stringify(params);
-  console.log("S:", s);
 
-  console.log("geell", word, meaning);
   let xhttp = new XMLHttpRequest();
   xhttp.open("POST", "http://localhost:9002/add", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);

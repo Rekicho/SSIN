@@ -99,9 +99,11 @@
 
       <div id="Read" class="tabcontent">
         <!-- Ask for the word to be searched in the protected resource -->
-        <form>
+        <form onsubmit="return getProtectedResource();">
           <label>Word Search:</label>
           <input id="form-read" type="text"><br>
+          <label>Word Meaning:</label>
+          <input readonly id="form-res" type="text"><br>
           <button type="submit">Submit</button>
         </form>
         <!-- <h3>London</h3>

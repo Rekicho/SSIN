@@ -3,10 +3,34 @@ const { getTokenInfo, readFile, writeToFile } = require("./utils");
 
 const scopes = [
   {
-    username: "SSIN",
+    username: "SSIN-all",
     read: true,
     write: true,
     delete: true,
+  },
+  {
+    username: "SSIN-read",
+    read: true,
+    write: false,
+    delete: false,
+  },
+  {
+    username: "SSIN-write",
+    read: false,
+    write: true,
+    delete: false,
+  },
+  {
+    username: "SSIN-delete",
+    read: false,
+    write: false,
+    delete: true,
+  },
+  {
+    username: "SSIN",
+    read: true,
+    write: true,
+    delete: false,
   },
 ];
 
@@ -65,6 +89,22 @@ async function deleteWord(){
 
 }
 
+async function readWord(request, response){
+  const scopes = await validateAccessToken(request, response);
+  console.log("SCOPE", scopes);
+  if(scopes["read"])
+  {
+    let content = getResource();
+    console.log("READ", request.body.word)
+    const meaning = content.find(element => element.word === request.body.word);
+    console.log(meaning);
+    if(meaning === undefined)
+      return response.send(`Word not found`);
+    return response.send(`${meaning.meaning}`);
+  }
+  response.status(401).send('Insufficient permission: NO READ SCOPE')
+}
 
 
-module.exports = { validateAccessToken, addWord,  };
+
+module.exports = { validateAccessToken, addWord, readWord, deleteWord };
