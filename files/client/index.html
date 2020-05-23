@@ -23,6 +23,44 @@
       outline: none !important;
       text-decoration: none !important;
     }
+
+    .overflow-token {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab {
+      display: none;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
   </style>
   <script src="index.js"></script>
 </head>
@@ -40,13 +78,42 @@
     <div class="jumbotron">
       <div class="alert alert-info" role="alert">This is the shell for the <strong>OAuth Client</strong>. This provides
         no actual functionality.</div>
-      <p>Access token value: <span class="label label-danger access_token"><%- access_token ? access_token : 'NONE' %></span></p>
+      <p class="overflow-token">Access token value: <span
+          class="label label-danger access_token"><%- access_token ? access_token : 'NONE' %></span></p>
       <p>Scope value: <span class="label label-danger"><%- scope ? scope : 'NONE' %></span></p>
-      <p>Refresh token value: <span class="label label-danger"><%- refresh_token ? refresh_token : 'NONE' %></span></p>
+      <p class="overflow-token">Refresh token value: <span
+          class="label label-danger"><%- refresh_token ? refresh_token : 'NONE' %></span></p>
       <a class="btn btn-default" href='http://127.0.0.1:9001/authorize?response_type=code&client_id=<%-client_id%>'>
         Get OAuth Token
       </a>
-      <button class="btn btn-default" onclick="getProtectedResource()" href="/fetch_resource" <%- access_token ? '' : 'disabled' %>>Get Protected Resource</button>
+      <!-- <button class="btn btn-default" onclick="getProtectedResource()" href="/fetch_resource" -->
+      <button class="btn btn-default" onclick='createTabs("<%-scope%>")' <%- access_token ? '' : 'disabled' %>>Get
+        Protected Resource</button>
+      <br />
+      <br />
+      <div class="tab mt-4">
+        <button class="tablinks" onclick="openTab(event, 'Read')">Read</button>
+        <button class="tablinks" onclick="openTab(event, 'Write')">Write</button>
+        <button class="tablinks" onclick="openTab(event, 'Delete')">Delete</button>
+      </div>
+
+      <div id="Read" class="tabcontent">
+        <!-- Ask for the word to be searched in the protected resource -->
+        <p>Ask for the word to be searched in the protected resource</p>
+        <!-- <h3>London</h3>
+        <p>London is the capital city of England.</p> -->
+      </div>
+
+      <div id="Write" class="tabcontent">
+        <h3>Paris</h3>
+        <p>Paris is the capital of France.</p>
+      </div>
+
+      <div id="Delete" class="tabcontent">
+        <h3>Tokyo</h3>
+        <p>Tokyo is the capital of Japan.</p>
+      </div>
+
       <article class="protectedResource"></article>
     </div>
   </div><!-- /.container -->

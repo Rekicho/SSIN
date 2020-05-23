@@ -93,7 +93,7 @@ app.post("/submit-credentials", async (req, res) => {
   const scope =
     (req.body.read ? "read " : "") +
     (req.body.write ? "write " : "") +
-    (req.body.delete ? "delete " : "");
+    (req.body.delete ? "delete" : "");
 
   const client = clients.find((elem) => elem.client_id === client_id);
   const user = users.find((elem) => elem.username === username);

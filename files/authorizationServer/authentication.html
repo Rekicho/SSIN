@@ -47,7 +47,8 @@
   <div class="container">
 
     <div class="jumbotron">
-      <h3><%-error%></h3>
+      <h3 class="text-center"><%- error ? 'ERROR: ' + error : '' %></h3>
+      <h4 class="text-center"><%- error ? 'try again' : '' %></h4>
       <h2 class="40px">Login</h2>
       <form method="POST" action="/submit-credentials">
         <label for="identifier">Identifier:</label><br />
