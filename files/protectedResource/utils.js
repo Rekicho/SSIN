@@ -46,4 +46,4 @@ function writeToFile(filePath, content) {
   });
 }
 
-module.exports = { getTokenInfo, readFile };
+module.exports = { getTokenInfo, readFile, writeToFile };

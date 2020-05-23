@@ -1,5 +1,5 @@
 var express = require("express");
-const { getTokenInfo, readFile } = require("./utils");
+const { getTokenInfo, readFile, writeToFile } = require("./utils");
 
 const scopes = [
   {
@@ -39,14 +39,14 @@ async function validateAccessToken(request, response) {
 
 function getResource() {
 
-  const file = readFile("./files/protectedResource/resources/resource");
+  const file = readFile("./files/protectedResource/resources/resource.json");
   const content = JSON.parse(file);
   console.log("content:", content);
   return content;
 }
 
 async function addWord(request, response){
-  const scopes = validateAccessToken(request, response);
+  const scopes = await validateAccessToken(request, response);
   console.log("SCOPE", scopes);
   if(scopes["write"])
   {
@@ -54,10 +54,17 @@ async function addWord(request, response){
     console.log("WRITE", request.body.word ,":", request.body.meaning)
     const newEntry = {"word": request.body.word, "meaning": request.body.meaning};
     content.push(newEntry);
-    writeToFile("./files/protectedResource/resources/resource", JSON.stringify(content));
-    response.send("OK");
+    await writeToFile("./files/protectedResource/resources/resource.json", JSON.stringify(content));
+    return response.send("OK");
+    
   }
   response.status(401).send('Insufficient permission: NO WRITE SCOPE')
 }
+
+async function deleteWord(){
+
+}
+
+
 
 module.exports = { validateAccessToken, addWord,  };
