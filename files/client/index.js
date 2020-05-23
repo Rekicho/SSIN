@@ -57,7 +57,7 @@ const getScopes = () =>{
   const token = document.querySelector(".access_token").innerText;
 
   let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "http://localhost:9002/scopes", true);
+  xhttp.open("POST", "http://localhost:9002/scopes", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
 
   xhttp.onreadystatechange = function () {
@@ -77,7 +77,7 @@ const getProtectedResource = () => {
   const token = document.querySelector(".access_token").innerText;
 
   let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "http://localhost:9002/resource/resource.json", true);
+  xhttp.open("POST", "http://localhost:9002/resource/resource.json", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
 
   xhttp.onreadystatechange = function () {
@@ -93,14 +93,22 @@ const getProtectedResource = () => {
   xhttp.send();
 };
 
-const addProtectedResource = (word, meaning) => {
+const addProtectedResource = (event) => {
+  console.log(event);
+  const word = document.getElementById('form-word').value;
+  const meaning = document.getElementById('form-meaning').value;
+
   const token = document.querySelector(".access_token").innerText;
+  
   const params = {"word": word, "meaning": meaning};
+  const s = JSON.stringify(params);
+  console.log("S:", s);
+
   console.log("geell", word, meaning);
   let xhttp = new XMLHttpRequest();
   xhttp.open("POST", "http://localhost:9002/add", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
-  
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
@@ -110,14 +118,15 @@ const addProtectedResource = (word, meaning) => {
     }
   };
 
-  xhttp.send(JSON.stringify(params));
+  xhttp.send(`word=${word}&meaning=${meaning}`);
+  return false;
 };
 
 const deleteProtectedResource = () => {
   const token = document.querySelector(".access_token").innerText;
 
   let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "http://localhost:9002/resource/resource.json", true);
+  xhttp.open("POST", "http://localhost:9002/resource/resource.json", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
 
   xhttp.onreadystatechange = function () {
