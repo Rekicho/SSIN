@@ -98,9 +98,11 @@
       </div>
 
       <div id="Read" class="tabcontent">
-        <form>
+        <form onsubmit="return getProtectedResource();">
           <label>Word Search:</label>
           <input id="form-read" type="text"><br>
+          <label>Word Meaning:</label>
+          <input readonly id="form-res" type="text"><br>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
