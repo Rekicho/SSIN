@@ -99,19 +99,33 @@
 
       <div id="Read" class="tabcontent">
         <!-- Ask for the word to be searched in the protected resource -->
-        <p>Ask for the word to be searched in the protected resource</p>
+        <form>
+          <label>Word Search:</label>
+          <input id="form-read" type="text"><br>
+          <button type="submit">Submit</button>
+        </form>
         <!-- <h3>London</h3>
         <p>London is the capital city of England.</p> -->
       </div>
 
       <div id="Write" class="tabcontent">
-        <h3>Paris</h3>
-        <p>Paris is the capital of France.</p>
+        <form>
+          <label>New Word:</label>
+          <input id="form-word" type="text"><br>
+          <label>New Word Meaning:</label>
+          <input id="form-meaning" type="text"><br>
+          <button type="submit">Submit</button>
+
+        </form>
       </div>
 
       <div id="Delete" class="tabcontent">
-        <h3>Tokyo</h3>
-        <p>Tokyo is the capital of Japan.</p>
+        <form>
+          <label>Word To Delete:</label>
+          <input id="form-delete" type="text">
+          <button type="submit">Submit</button>
+
+        </form>
       </div>
 
       <article class="protectedResource"></article>
