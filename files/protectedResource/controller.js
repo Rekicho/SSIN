@@ -6,7 +6,7 @@ const scopes = [
     username: "SSIN",
     read: true,
     write: true,
-    delete: false,
+    delete: true,
   },
 ];
 
@@ -34,19 +34,28 @@ async function validateAccessToken(request, response) {
     delete: tokenInfo.scope.includes("delete") && user.delete,
   };
 
-  response.send({
-    scope: scope,
-  });}
+  return scope;}
 
-function getResource(request, response, scope) {
-  const resource = request.params.id;
+function getResource() {
 
-  const file = readFile("./files/protectedResource/resources/" + resource);
-  const content = JSON.parse(file)["content"];
-  response.send({
-    content: content,
-    scope: scope,
-  });
+  const file = readFile("./files/protectedResource/resources/resource");
+  const content = JSON.parse(file);
+  console.log("content:", content);
+  return content;
+}
+
+function addWord(request, response){
+  const scopes = validateAccessToken(request, response);
+  if(scopes.write)
+  {
+    let content = getResource();
+    console.log("WRITE", request.body.word ,":", request.body.meaning)
+    const newEntry = {"word": request.body.word, "meaning": request.body.meaning};
+    content.push(newEntry);
+    writeToFile("./files/protectedResource/resources/resource", JSON.stringify(content));
+    response.send("OK");
+  }
+  response.status(401).send('Insufficient permission: NO WRITE SCOPE')
 }
 
 module.exports = { validateAccessToken, getResource };
