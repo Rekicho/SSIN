@@ -11,6 +11,7 @@ route.get("/scopes", async (request, response) => {
 });
 
 route.post("/add", async (request, response) =>{
+  console.log("POST /add " + JSON.stringify(request.query));
   await addWord(request, response);
 })
 

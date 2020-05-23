@@ -93,8 +93,12 @@ const getProtectedResource = () => {
   xhttp.send();
 };
 
-const addProtectedResource = (word, meaning) => {
+const addProtectedResource = () => {
+  const word = document.getElementById('form-word').value;
+  const meaning = document.getElementById('form-meaning').value;
+
   const token = document.querySelector(".access_token").innerText;
+  
   const params = {"word": word, "meaning": meaning};
   console.log("geell", word, meaning);
   let xhttp = new XMLHttpRequest();
