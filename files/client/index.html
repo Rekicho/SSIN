@@ -109,13 +109,12 @@
       </div>
 
       <div id="Write" class="tabcontent">
-        <form>
+        <form onsubmit="addProtectedResource(document.getElementById('form-word').value, document.getElementById('form-meaning').value)">
           <label>New Word:</label>
           <input id="form-word" type="text"><br>
           <label>New Word Meaning:</label>
           <input id="form-meaning" type="text"><br>
           <button type="submit">Submit</button>
-
         </form>
       </div>
 

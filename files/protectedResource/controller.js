@@ -34,7 +34,8 @@ async function validateAccessToken(request, response) {
     delete: tokenInfo.scope.includes("delete") && user.delete,
   };
 
-  return scope;}
+  return scope;
+}
 
 function getResource() {
 
@@ -44,9 +45,10 @@ function getResource() {
   return content;
 }
 
-function addWord(request, response){
+async function addWord(request, response){
   const scopes = validateAccessToken(request, response);
-  if(scopes.write)
+  console.log("SCOPE", scopes);
+  if(scopes["write"])
   {
     let content = getResource();
     console.log("WRITE", request.body.word ,":", request.body.meaning)
@@ -58,4 +60,4 @@ function addWord(request, response){
   response.status(401).send('Insufficient permission: NO WRITE SCOPE')
 }
 
-module.exports = { validateAccessToken, getResource };
+module.exports = { validateAccessToken, addWord,  };
