@@ -30,7 +30,7 @@ const scopes = [
     username: "SSIN",
     read: true,
     write: true,
-    delete: false,
+    delete: true,
   },
 ];
 
@@ -69,36 +69,58 @@ function getResource() {
   return content;
 }
 
-async function addWord(request, response){
+async function addWord(request, response) {
   const scopes = await validateAccessToken(request, response);
   console.log("SCOPE", scopes);
-  if(scopes["write"])
-  {
+  if (scopes["write"]) {
     let content = getResource();
-    console.log("WRITE", request.body.word ,":", request.body.meaning)
-    const newEntry = {"word": request.body.word, "meaning": request.body.meaning};
+    console.log("WRITE", request.body.word, ":", request.body.meaning)
+    const newEntry = { "word": request.body.word, "meaning": request.body.meaning };
+    const index = content.findIndex(element => element.word === request.body.word);
+    if (index !== -1) {
+      return response.send("Word already exists");
+    }
     content.push(newEntry);
     await writeToFile("./files/protectedResource/resources/resource.json", JSON.stringify(content));
-    return response.send("OK");
-    
+    return response.send("Word Added Successfully!");
+
   }
   response.status(401).send('Insufficient permission: NO WRITE SCOPE')
 }
 
-async function deleteWord(){
-
-}
-
-async function readWord(request, response){
+async function deleteWord(request, response) {
   const scopes = await validateAccessToken(request, response);
   console.log("SCOPE", scopes);
-  if(scopes["read"])
-  {
+
+  if (scopes["delete"]) {
+    let content = getResource();
+    console.log("DELETE", request.body.word);
+    const beforeDeleteLength = content.length;
+    const index = content.findIndex(element => element.word === request.body.word);
+
+    if (index === -1)
+      return response.send(`Word not found`);
+
+    content.splice(index, 1);
+
+    if (beforeDeleteLength == content.length)
+      return response.send(`Word not deleted`);
+
+    await writeToFile("./files/protectedResource/resources/resource.json", JSON.stringify(content));
+    return response.send(`Word deleted successfully`);
+  }
+  response.status(401).send('Insufficient permission: NO WRITE SCOPE')
+}
+
+async function readWord(request, response) {
+  const scopes = await validateAccessToken(request, response);
+  console.log("SCOPE", scopes);
+  if (scopes["read"]) {
     let content = getResource();
     console.log("READ", request.body.word)
     const meaning = content.find(element => element.word === request.body.word);
     console.log(meaning);
-    if(meaning === undefined)
+    if (meaning === undefined)
       return response.send(`Word not found`);
     return response.send(`${meaning.meaning}`);
   }

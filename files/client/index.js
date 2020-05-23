@@ -65,12 +65,10 @@ const getProtectedResource = () => {
   const token = document.querySelector(".access_token").innerText;
   const word = document.getElementById('form-read').value;
 
-
   let xhttp = new XMLHttpRequest();
   xhttp.open("POST", "http://localhost:9002/read", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
   xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
@@ -78,7 +76,10 @@ const getProtectedResource = () => {
 
       const res = xhttp.responseText;
       console.log(res);
-      document.getElementById("form-res").value = res;
+      if (res == "Word not found")
+        document.getElementById("read-error").innerHTML = res;
+      else
+        document.getElementById("form-res").value = res;
     }
   };
 
@@ -86,11 +87,14 @@ const getProtectedResource = () => {
   return false;
 };
 
-const addProtectedResource = (event) => {
-  console.log(event);
+const addProtectedResource = () => {
   const word = document.getElementById('form-word').value;
   const meaning = document.getElementById('form-meaning').value;
 
+  if (word === '' || meaning === '') {
+    document.getElementById("write-error").innerHTML = "The input values can not be null";
+    return false;
+  }
   const token = document.querySelector(".access_token").innerText;
 
   const params = { "word": word, "meaning": meaning };
@@ -105,7 +109,9 @@ const addProtectedResource = (event) => {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
       console.log(xhttp);
 
-      console.log(xhttp.responseText);
+      const res = xhttp.responseText;
+      console.log(res);
+      document.getElementById("write-error").innerHTML = res;
     }
   };
 
@@ -116,22 +122,30 @@ const addProtectedResource = (event) => {
 const deleteProtectedResource = () => {
   const word = document.getElementById('form-delete').value;
   const token = document.querySelector(".access_token").innerText;
+  console.log("W:" + word);
 
   let xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "http://localhost:9002/resource/resource.json", true);
+  xhttp.open("POST", "http://localhost:9002/delete", true);
   xhttp.setRequestHeader("Authorization", "Bearer " + token);
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
       console.log(xhttp);
-
-      const res = JSON.parse(xhttp.responseText);
-      console.log(res.scope);
-      document.querySelector(".protectedResource").innerHTML = res.content;
+      const res = xhttp.responseText;
+      console.log(res);
+      document.getElementById("deleted-res").innerHTML = res;
     }
   };
 
-  xhttp.send();
+  xhttp.send(`word=${word}`);
   return false;
-
 };
+
+function inputHandler(msg) {
+  document.getElementById(msg).innerHTML = null;
+
+  if (msg === 'read-error')
+    document.getElementById('form-res').value = null;
+
+}

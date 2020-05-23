@@ -86,7 +86,6 @@
       <a class="btn btn-default" href='http://127.0.0.1:9001/authorize?response_type=code&client_id=<%-client_id%>'>
         Get OAuth Token
       </a>
-      <!-- <button class="btn btn-default" onclick="getProtectedResource()" href="/fetch_resource" -->
       <button class="btn btn-default" onclick="getScopes()" <%- access_token ? '' : 'disabled' %>>Get
         Protected Resource</button>
       <br />
@@ -100,28 +99,31 @@
       <div id="Read" class="tabcontent">
         <form onsubmit="return getProtectedResource();">
           <label>Word Search:</label>
-          <input id="form-read" type="text"><br>
+          <input id="form-read" type="text" oninput="inputHandler('read-error')" /><br>
           <label>Word Meaning:</label>
-          <input readonly id="form-res" type="text"><br>
+          <input readonly id="form-res" type="text" /><br>
           <button class="btn btn-primary" type="submit">Submit</button>
+          <h6 id="read-error" class="text-muted text-center"></h6>
         </form>
       </div>
 
       <div id="Write" class="tabcontent">
         <form onsubmit="return addProtectedResource();">
           <label>New Word:</label>
-          <input id="form-word" type="text"><br>
+          <input id="form-word" type="text" oninput="inputHandler('write-error')"><br>
           <label>New Word Meaning:</label>
-          <input id="form-meaning" type="text"><br>
+          <input id="form-meaning" type="text" oninput="inputHandler('write-error')"><br>
           <button class="btn btn-primary" type="submit">Submit</button>
+          <h6 id="write-error" class="text-muted text-center"></h6>
         </form>
       </div>
 
       <div id="Delete" class="tabcontent">
         <form onsubmit="return deleteProtectedResource();">
           <label>Word To Delete:</label>
-          <input id="form-delete" type="text"><br>
+          <input id="form-delete" type="text" oninput="inputHandler('deleted-res')" /><br>
           <button class="btn btn-primary" type="submit">Submit</button>
+          <h6 id="deleted-res" class="text-muted text-center"></h6>
         </form>
       </div>
 
