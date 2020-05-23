@@ -43,10 +43,25 @@ var clients = [
 
 const users = [
   {
+    username: "SSIN-all",
+    password: "$2b$12$HGaPQ3JQOKZXyTqq8YXuBe/03Yps2LMHpiI9AEYwpQD5BujjS1BD.",
+  },
+  {
+    username: "SSIN-read",
+    password: "$2b$12$HGaPQ3JQOKZXyTqq8YXuBe/03Yps2LMHpiI9AEYwpQD5BujjS1BD.",
+  },
+  {
+    username: "SSIN-write",
+    password: "$2b$12$HGaPQ3JQOKZXyTqq8YXuBe/03Yps2LMHpiI9AEYwpQD5BujjS1BD.",
+  },
+  {
+    username: "SSIN-delete",
+    password: "$2b$12$HGaPQ3JQOKZXyTqq8YXuBe/03Yps2LMHpiI9AEYwpQD5BujjS1BD.",
+  },
+  {
     username: "SSIN",
     password: "$2b$12$HGaPQ3JQOKZXyTqq8YXuBe/03Yps2LMHpiI9AEYwpQD5BujjS1BD.",
-    scope: "foo bar",
-  },
+  }
 ];
 
 const codes = [];

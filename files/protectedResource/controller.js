@@ -65,16 +65,13 @@ function getResource() {
 
   const file = readFile("./files/protectedResource/resources/resource.json");
   const content = JSON.parse(file);
-  console.log("content:", content);
   return content;
 }
 
 async function addWord(request, response) {
   const scopes = await validateAccessToken(request, response);
-  console.log("SCOPE", scopes);
   if (scopes["write"]) {
     let content = getResource();
-    console.log("WRITE", request.body.word, ":", request.body.meaning)
     const newEntry = { "word": request.body.word, "meaning": request.body.meaning };
     const index = content.findIndex(element => element.word === request.body.word);
     if (index !== -1) {
@@ -90,11 +87,9 @@ async function addWord(request, response) {
 
 async function deleteWord(request, response) {
   const scopes = await validateAccessToken(request, response);
-  console.log("SCOPE", scopes);
 
   if (scopes["delete"]) {
     let content = getResource();
-    console.log("DELETE", request.body.word);
     const beforeDeleteLength = content.length;
     const index = content.findIndex(element => element.word === request.body.word);
 
@@ -114,12 +109,9 @@ async function deleteWord(request, response) {
 
 async function readWord(request, response) {
   const scopes = await validateAccessToken(request, response);
-  console.log("SCOPE", scopes);
   if (scopes["read"]) {
     let content = getResource();
-    console.log("READ", request.body.word)
     const meaning = content.find(element => element.word === request.body.word);
-    console.log(meaning);
     if (meaning === undefined)
       return response.send(`Word not found`);
     return response.send(`${meaning.meaning}`);
