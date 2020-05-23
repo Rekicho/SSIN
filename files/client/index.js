@@ -19,22 +19,10 @@ function showsTabContent() {
   tabcontent[0].style.display = "block";
 };
 
-function createDeleteTab(tab){
-  tabcontent[0].innerHTML += 
-      '<button class="tablinks" onClick="openTab(event,' + 'Delete' + ')">' + "Delete" + '</button> \
-      ';
-}
-
-function createAddTab(tab){
-  tabcontent[0].innerHTML += 
-      '<button class="tablinks" onClick="openTab(event,' + 'Write' + ')">' + "Write" + '</button> \
-      ';
-}
-
-function createReadTab(tab){
-  tabcontent[0].innerHTML += 
-      '<button class="tablinks" onClick="openTab(event,' + 'Read' + ')">' + "Read" + '</button> \
-      ';
+function createScopeTab(tab, type) {
+  tab[0].innerHTML +=
+    '<button class="tablinks" onClick="openTab(event,' + type + ')">' + type + '</button> \
+    ';
 }
 
 function createTabs(scopes) {
@@ -42,18 +30,18 @@ function createTabs(scopes) {
 
   tabcontent = document.getElementsByClassName("tab");
   tabcontent[0].innerHTML = '';
-  if(scopes.read)
-    createReadTab(tabcontent);
-  if(scopes.write)
-    createAddTab(tabcontent);
-  if(scopes.delete)
-    createDeleteTab(tabcontent);
+  if (scopes.read)
+    createScopeTab(tabcontent, "Read");
+  if (scopes.write)
+    createScopeTab(tabcontent, "Write");
+  if (scopes.delete)
+    createScopeTab(tabcontent, "Delete");
 
   showsTabContent();
 }
 
 
-const getScopes = () =>{
+const getScopes = () => {
   const token = document.querySelector(".access_token").innerText;
 
   let xhttp = new XMLHttpRequest();
@@ -99,8 +87,8 @@ const addProtectedResource = (event) => {
   const meaning = document.getElementById('form-meaning').value;
 
   const token = document.querySelector(".access_token").innerText;
-  
-  const params = {"word": word, "meaning": meaning};
+
+  const params = { "word": word, "meaning": meaning };
   const s = JSON.stringify(params);
   console.log("S:", s);
 
