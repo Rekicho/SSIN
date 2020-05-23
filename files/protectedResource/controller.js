@@ -10,7 +10,7 @@ const scopes = [
   },
 ];
 
-async function validateAccessToken(request, response, next) {
+async function validateAccessToken(request, response) {
   console.log("Headers: " + JSON.stringify(request.headers));
   console.log("Body: " + JSON.stringify(request.body));
 
@@ -34,8 +34,9 @@ async function validateAccessToken(request, response, next) {
     delete: tokenInfo.scope.includes("delete") && user.delete,
   };
 
-  next(request, response, scope);
-}
+  response.send({
+    scope: scope,
+  });}
 
 function getResource(request, response, scope) {
   const resource = request.params.id;
@@ -43,8 +44,8 @@ function getResource(request, response, scope) {
   const file = readFile("./files/protectedResource/resources/" + resource);
   const content = JSON.parse(file)["content"];
   response.send({
-    scope: scope,
     content: content,
+    scope: scope,
   });
 }
 

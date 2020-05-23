@@ -87,7 +87,7 @@
         Get OAuth Token
       </a>
       <!-- <button class="btn btn-default" onclick="getProtectedResource()" href="/fetch_resource" -->
-      <button class="btn btn-default" onclick='createTabs("<%-scope%>")' <%- access_token ? '' : 'disabled' %>>Get
+      <button class="btn btn-default" onclick="getScopes()" <%- access_token ? '' : 'disabled' %>>Get
         Protected Resource</button>
       <br />
       <br />
