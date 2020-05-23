@@ -111,6 +111,7 @@ const addProtectedResource = (event) => {
 };
 
 const deleteProtectedResource = () => {
+  const word = document.getElementById('form-delete').value;
   const token = document.querySelector(".access_token").innerText;
 
   let xhttp = new XMLHttpRequest();
@@ -128,4 +129,6 @@ const deleteProtectedResource = () => {
   };
 
   xhttp.send();
+  return false;
+
 };

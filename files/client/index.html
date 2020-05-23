@@ -98,14 +98,11 @@
       </div>
 
       <div id="Read" class="tabcontent">
-        <!-- Ask for the word to be searched in the protected resource -->
         <form>
           <label>Word Search:</label>
           <input id="form-read" type="text"><br>
-          <button type="submit">Submit</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </form>
-        <!-- <h3>London</h3>
-        <p>London is the capital city of England.</p> -->
       </div>
 
       <div id="Write" class="tabcontent">
@@ -114,16 +111,15 @@
           <input id="form-word" type="text"><br>
           <label>New Word Meaning:</label>
           <input id="form-meaning" type="text"><br>
-          <button type="submit">Submit</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
 
       <div id="Delete" class="tabcontent">
-        <form>
+        <form onsubmit="return deleteProtectedResource();">
           <label>Word To Delete:</label>
-          <input id="form-delete" type="text">
-          <button type="submit">Submit</button>
-
+          <input id="form-delete" type="text"><br>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
 
