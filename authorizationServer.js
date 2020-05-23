@@ -101,10 +101,10 @@ app.post("/submit-credentials", async (req, res) => {
   if (!client || !user)
     return res.redirect(
       "/authorize?response_type=" +
-        response_type +
-        "&client_id=" +
-        client_id +
-        "&error=BadRequest"
+      response_type +
+      "&client_id=" +
+      client_id +
+      "&error=BadRequest"
     );
 
   const match = await bcrypt.compare(password, user.password);
@@ -112,10 +112,10 @@ app.post("/submit-credentials", async (req, res) => {
   if (!match)
     return res.redirect(
       "/authorize?response_type=" +
-        response_type +
-        "&client_id=" +
-        client_id +
-        "&error=BadRequest"
+      response_type +
+      "&client_id=" +
+      client_id +
+      "&error=BadRequest"
     );
 
   const code = crypto.randomBytes(64).toString("hex");

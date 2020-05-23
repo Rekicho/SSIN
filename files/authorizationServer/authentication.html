@@ -36,7 +36,7 @@
   <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href='/authorize?response_type=<%response_type%>&client_id=<%client_id%>'>OAuth in
+        <a class="navbar-brand" href='/authorize?response_type=<%-response_type%>&client_id=<%-client_id%>'>OAuth in
           Action: <span class="label label-danger">OAuth
             Authorization
             Server</label></a>
@@ -50,7 +50,7 @@
       <h3><%-error%></h3>
       <h2 class="40px">Login</h2>
       <form method="POST" action="/submit-credentials">
-        <label for="identifier">Identifier:</label><br>
+        <label for="identifier">Identifier:</label><br />
         <input type="text" id="identifier" name="identifier" value=""><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" value=""><br><br>
@@ -61,8 +61,8 @@
         <input type="checkbox" id="delete" name="delete">
         <label for="delete">Delete</label>
         <input class="i" type="hidden" id="client_id" name="client_id" value="<%- client_id%>">
-        <input class="i" type="hidden" id="response_type" name="response_type" value="<%- response_type%>">
-        <input type="submit" value="Submit">
+        <input class="i" type="hidden" id="response_type" name="response_type" value="<%- response_type%>"><br /><br />
+        <input class="btn btn-primary" type="submit" value="Submit">
       </form>
     </div>
 
